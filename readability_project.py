@@ -95,7 +95,7 @@ class Word(object):
     def __init__(self, word, lem_word, pos_tag):
         self.word = word
         self.pos_tag = pos_tag
-        
+        self.lem_word = lem_word
     def get_word(self):
         return self.word
     
@@ -374,8 +374,8 @@ for sent in sent_dict:
     new_sent = Sentence(sent, y)
     sent_object_list.append(new_sent)
 
-for sent in sent_object_list:
-    print sent.get_sentence()
+#for sent in sent_object_list:
+    #print sent.get_sentence()
 
 morpheme_count = 0
 sent_count = 0
@@ -389,22 +389,85 @@ for sent in sent_object_list:
         prev_word = sent.get_words()[i-1].get_word()
         next_word = sent.get_words()[i+1].get_word()
         if i == 1:
-            if sent.get_words[i-1].get_pos_tag() == 'NNS':
+            #print current_word
+            #print sent.get_words()[i-1].get
+            #print sent.get_words[i-1]
+            
+            if sent.get_words()[i-1].get_pos_tag() == 'NNS':
                 if prev_word == "pants" or prev_word == "clothes":
+                    print "found pants or clothes"
                     morpheme_count += 1
                 else:
+                    print 'found NNS'
                     morpheme_count += 2
-            if sent.get_words[i-1].get_pos_tag() == 'VBZ':
-                if prev_word != 'does'and sent.get_words[i-1].get_lem_word() != 'be':
+            if sent.get_words()[i-1].get_pos_tag() == 'VBZ':
+                if prev_word != 'does'and sent.get_words()[i-1].get_lem_word() != 'be':
+                    print 'found VBZ'
                     morpheme_count += 2
                 else:
                     morpheme_count += 1
-            if sent.get_words[i-1].get_pos_tag() == 'VBD':
-                if sent.get_words[i-1].get_lem_word() == 'be':
+            if sent.get_words()[i-1].get_pos_tag() == ('VBD' or 'VBN'):
+                if sent.get_words()[i-1].get_lem_word() == 'be':
                     morpheme_count += 1
-                if prev_word[-2:-1] =='ed':
+                if prev_word[-2:] =='ed':
                     print prev_word
                     morpheme_count += 2
+                else:
+                    morpheme_count += 1
+            if sent.get_words()[i-1].get_pos_tag() == 'VBG':
+                if prev_word[-3:] == 'ing':
+                    print prev_word
+                    morpheme_count += 2
+                else:
+                    morpheme_count += 1
+            else:
+                morpheme_count += 1
+        else:
+            if sent.get_words()[i].get_pos_tag() == 'POS':
+                if current_word == "'s":
+                    if prev_word != 'let':
+                        morpheme_count += 1
+            if current_word == "'t":
+                if prev_word != ("don" and "won"):
+                    morpheme_count += 1
+            if sent.get_words()[i].get_pos_tag() == 'NNS':
+                if current_word == "pants" or current_word == "clothes":
+                    print "found pants or clothes"
+                    morpheme_count += 1
+                else:
+                    print 'found NNS'
+                    morpheme_count += 2
+            if sent.get_words()[i].get_pos_tag() == 'VBZ':
+                if current_word != 'does'and sent.get_words()[i].get_lem_word() != 'be':
+                    print 'found VBZ'
+                    morpheme_count += 2
+                else:
+                    morpheme_count += 1
+            if sent.get_words()[i].get_pos_tag() == ('VBD' or 'VBN'):
+                if sent.get_words()[i].get_lem_word() == 'be':
+                    morpheme_count += 1
+                if current_word[-2:] =='ed':
+                    print current_word
+                    morpheme_count += 2
+                else:
+                    morpheme_count += 1
+            if sent.get_words()[i].get_pos_tag() == 'VBG':
+                if current_word[-3:] == 'ing':
+                    print current_word
+                    morpheme_count += 2
+                else:
+                    morpheme_count += 1
+            else:
+                morpheme_count += 1
+print "Morphemes: ", morpheme_count
+print "Sentences: ", sent_count
+
+print "MLU: "
+print float(morpheme_count)/sent_count
+
+                        
+            
+                        
             
             
                     
