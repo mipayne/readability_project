@@ -392,10 +392,12 @@ for fileName in list_of_files:
                         morpheme_count += 2
                     else:
                         morpheme1_list.append(prev_word)
-                        morpheme_count += 1
-                else:
-                    morpheme1_list.append(prev_word)
+                        morpheme_count += 1 
+                elif sent.get_words()[i-1].get_pos_tag() != ('.' and ',' and  '``' and  "''" and ':'):
                     morpheme_count += 1
+                    morpheme1_list.append(prev_word)
+                else:
+                    print prev_word
             else:
                 if sent.get_words()[i].get_pos_tag() == 'POS':
                     if current_word == "'s":
@@ -442,20 +444,12 @@ for fileName in list_of_files:
                     else:
                         morpheme_count += 1
                         morpheme1_list.append(current_word)
-                if current_word == ',':
-                    pass
-                if current_word == '.':
-                    pass
-                if current_word == '``':
-                    pass
-                if current_word == "''":
-                    pass
-                if current_word == '...':
-                    pass
                     #print current_word, sent.get_words()[i].get_pos_tag()
                 elif sent.get_words()[i].get_pos_tag() != ('.' and ',' and  '``' and  "''" and ':'):
                     morpheme_count += 1
                     morpheme1_list.append(current_word)
+                else:
+                    print current_word
     MLU_dict[fileName] = (morpheme_count, sent_count, float(morpheme_count)/sent_count)
 
 for book in MLU_dict:
@@ -468,12 +462,14 @@ for book in MLU_dict:
     
             
 print "Morpheme1: ", morpheme1_list
-
+#getting punctuation and '>', '<'
 print "Plural nouns: "
 print NNS_list
+#getting '======='
 
 print "3rd person singular present verbs: "
 print VBZ_list
+#getting "'s"
 
 #print "Regular past tense verbs: "
 #print VBD_list
