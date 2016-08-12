@@ -212,7 +212,7 @@ raw = f.read()
 '''
 #Mean Length Utterance (MLU) calculator
     #Morpheme counting rules from --> http://www.sltinfo.com/mean-length-of-utterance/
-
+        #according to these rules should have 100 sentences (these books to don't have that many words)
 import glob
 list_of_files = glob.glob('resources/converted/StoryCorpus/*.txt')
 
