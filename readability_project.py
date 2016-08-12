@@ -358,8 +358,10 @@ for fileName in list_of_files:
                 #print current_word
                 #print sent.get_words()[i-1].get
                 #print sent.get_words[i-1]
-                
-                if sent.get_words()[i-1].get_pos_tag() == 'NNS':
+                if prev_word in ('=======', '<', '>'):
+                    morpheme_count = morpheme_count
+                    #print prev_word, sent.get_words()[i-1].get_pos_tag()
+                elif sent.get_words()[i-1].get_pos_tag() == 'NNS':
                     if prev_word == "pants" or prev_word == "clothes":
                         #print "found pants or clothes"
                         morpheme_count += 1
@@ -368,7 +370,7 @@ for fileName in list_of_files:
                         NNS_list.append(prev_word)
                         #print 'found NNS'
                         morpheme_count += 2
-                if sent.get_words()[i-1].get_pos_tag() == 'VBZ':
+                elif sent.get_words()[i-1].get_pos_tag() == 'VBZ':
                     if prev_word != 'does'and sent.get_words()[i-1].get_lem_word() != 'be':
                         VBZ_list.append(prev_word)
                         #print 'found VBZ'
@@ -376,39 +378,45 @@ for fileName in list_of_files:
                     else:
                         morpheme1_list.append(prev_word)
                         morpheme_count += 1
-                if sent.get_words()[i-1].get_pos_tag() == ('VBD' or 'VBN'):
+                elif sent.get_words()[i-1].get_pos_tag() == ('VBD' or 'VBN'):
                     if sent.get_words()[i-1].get_lem_word() == 'be':
                         morpheme_count += 1
                         morpheme1_list.append(prev_word)
-                    if prev_word[-2:] =='ed':
+                    elif prev_word[-2:] =='ed':
                         VBDN_list.append(prev_word)
                         morpheme_count += 2
                     else:
                         morpheme1_list.append(prev_word)
                         morpheme_count += 1
-                if sent.get_words()[i-1].get_pos_tag() == 'VBG':
+                elif sent.get_words()[i-1].get_pos_tag() == 'VBG':
                     if prev_word[-3:] == 'ing':
                         VBG_list.append(prev_word)
                         morpheme_count += 2
                     else:
                         morpheme1_list.append(prev_word)
                         morpheme_count += 1 
-                elif sent.get_words()[i-1].get_pos_tag() != ('.' and ',' and  '``' and  "''" and ':'):
+                #elif sent.get_words()[i-1].get_pos_tag() in ('.', ',', '``',"''", ':', '-'):
+                    #pass
+                    #print prev_word, sent.get_words()[i-1].get_pos_tag()
+                elif sent.get_words()[i-1].get_pos_tag() not in ('.', ',', '``',"''", ':', '-'):
                     morpheme_count += 1
                     morpheme1_list.append(prev_word)
-                else:
-                    print prev_word
+                #else:
+                    #print "No points for you!!!!", prev_word
             else:
-                if sent.get_words()[i].get_pos_tag() == 'POS':
+                if current_word in ('=======', '<', '>'):
+                    morpheme_count = morpheme_count
+                    #print current_word, sent.get_words()[i].get_pos_tag()
+                elif sent.get_words()[i].get_pos_tag() == 'POS':
                     if current_word == "'s":
                         if prev_word != 'let':
                             morpheme1_list.append(current_word)
                             morpheme_count += 1
-                if current_word == "'t":
+                elif current_word == "'t":
                     if prev_word != ("don" and "won"):
                         morpheme_count += 1
                         morpheme1_list.append(current_word)
-                if sent.get_words()[i].get_pos_tag() == 'NNS':
+                elif sent.get_words()[i].get_pos_tag() == 'NNS':
                     if current_word == "pants" or current_word == "clothes":
                         #print "found pants or clothes"
                         morpheme_count += 1
@@ -417,7 +425,7 @@ for fileName in list_of_files:
                         #print 'found NNS'
                         NNS_list.append(current_word)
                         morpheme_count += 2
-                if sent.get_words()[i].get_pos_tag() == 'VBZ':
+                elif sent.get_words()[i].get_pos_tag() == 'VBZ':
                     if current_word != 'does'and sent.get_words()[i].get_lem_word() != 'be':
                         #print 'found VBZ'
                         VBZ_list.append(current_word)
@@ -425,18 +433,18 @@ for fileName in list_of_files:
                     else:
                         morpheme_count += 1
                         morpheme1_list.append(current_word)
-                if sent.get_words()[i].get_pos_tag() == ('VBD' or 'VBN'):
+                elif sent.get_words()[i].get_pos_tag() == ('VBD' or 'VBN'):
                     if sent.get_words()[i].get_lem_word() == 'be':
                         morpheme_count += 1
                         morpheme1_list.append(current_word)
-                    if current_word[-2:] =='ed':
+                    elif current_word[-2:] =='ed':
                         #print current_word
                         VBDN_list.append(current_word)
                         morpheme_count += 2
                     else:
                         morpheme_count += 1
                         morpheme1_list.append(current_word)
-                if sent.get_words()[i].get_pos_tag() == 'VBG':
+                elif sent.get_words()[i].get_pos_tag() == 'VBG':
                     if current_word[-3:] == 'ing':
                         #print current_word
                         morpheme_count += 2
@@ -445,11 +453,14 @@ for fileName in list_of_files:
                         morpheme_count += 1
                         morpheme1_list.append(current_word)
                     #print current_word, sent.get_words()[i].get_pos_tag()
-                elif sent.get_words()[i].get_pos_tag() != ('.' and ',' and  '``' and  "''" and ':'):
+                #elif sent.get_words()[i].get_pos_tag() in ('.', ',', '``',"''", ':', '-'):
+                    #pass
+                    #print current_word, sent.get_words()[i].get_pos_tag()
+                elif sent.get_words()[i].get_pos_tag() not in ('.', ',', '``',"''", ':', '-'):
                     morpheme_count += 1
                     morpheme1_list.append(current_word)
-                else:
-                    print current_word
+                #else:
+                    #print "No points for you!!!!", current_word
     MLU_dict[fileName] = (morpheme_count, sent_count, float(morpheme_count)/sent_count)
 
 for book in MLU_dict:
