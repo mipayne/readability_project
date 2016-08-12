@@ -210,7 +210,8 @@ print final_words
 f = open("./StoryCorpus_copy/Left_Right_Emma.txt")
 raw = f.read()
 '''
-
+#Mean Length Utterance (MLU) calculator
+    #Morpheme counting rules from --> http://www.sltinfo.com/mean-length-of-utterance/
 
 import glob
 list_of_files = glob.glob('resources/converted/StoryCorpus/*.txt')
