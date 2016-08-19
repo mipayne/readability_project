@@ -12,7 +12,7 @@ from nltk.corpus import wordnet
 from unidecode import unidecode
 import collections
 import random
-
+import book_tot_modify_read
 '''
 Brown's Rules for counting morphemes:
 
@@ -233,7 +233,7 @@ be_list = []
 #sent_count = 0
 
 for fileName in list_of_files:
-    f = open( fileName)
+    f = open(fileName)
     raw = f.read()
 
     final_words = []
@@ -464,6 +464,180 @@ for fileName in list_of_files:
                     #print "No points for you!!!!", current_word
     MLU_dict[fileName] = (morpheme_count, sent_count, float(morpheme_count)/sent_count)
 
+ordered_list = []
+
+for book in MLU_dict:
+    book_name = book[32:-4]
+    morpheme_count, sent_count, MLU = MLU_dict[book]
+    tuple_count = 0
+    first_book = False
+    if len(ordered_list) == 0:
+        first_book = True
+        ordered_list.append((book, MLU))
+    for tuple_pair in ordered_list:
+        temp_list = []
+        if first_book == True:
+            break
+        tuple_count += 1
+        if MLU > tuple_pair[1]:
+            temp_list = ordered_list[:(tuple_count-1)]
+            temp_list.append((book, MLU))
+            temp_list.extend(ordered_list[(tuple_count-1):])
+            ordered_list = temp_list[:]
+            break
+        elif tuple_count == len(ordered_list):
+            ordered_list.append((book, MLU))
+            break
+#print ordered_list
+            
+def truncate(f, n):
+    '''Truncates/pads a float f to n decimal places without rounding'''
+    s = '{}'.format(f)
+    if 'e' in s or 'E' in s:
+        return '{0:.{1}f}'.format(f, n)
+    i, p, d = s.partition('.')
+    return '.'.join([i, (d+'0'*n)[:n]])
+MLU10up = []
+MLU1 = []
+MLU2 = []
+MLU3 = []
+MLU4 = []
+MLU5 = []
+MLU6 = []
+MLU7 = []
+MLU8 = []
+MLU9 = []
+   
+book_count = 0
+for book in ordered_list:
+    number = truncate(book[1],0)
+    if len(number) > 2:
+        MLU10up.append(book)
+    elif number[0] == '1':
+        MLU1.append(book)
+    elif number[0] == '2':
+        MLU2.append(book)
+    elif number[0] == '3':
+        MLU3.append(book)
+    elif number[0] == '4':
+        MLU4.append(book)
+    elif number[0] == '5':
+        MLU5.append(book)
+    elif number[0] == '6':
+        MLU6.append(book)
+    elif number[0] == '7':
+        MLU7.append(book)
+    elif number[0] == '8':
+        MLU8.append(book)
+    elif number[0] == '9':
+        MLU9.append(book)
+'''        
+print MLU1 
+print MLU2
+print MLU3 
+print MLU4 
+print MLU5 
+print MLU6 
+print MLU7 
+print MLU8
+print MLU9 
+print MLU10up        
+'''
+
+
+#print book_tot_modify_read.book_tot_modify('./resources/converted/StoryCorpus/*.txt')
+#creating categories
+#WARNING!!! NOT WORKING YET
+modified_book_words = book_tot_modify_read.book_tot_modify('./resources/converted/StoryCorpus/*.txt')
+MLU1_words = []
+MLU2_words = []
+MLU3_words = []
+MLU4_words = []
+MLU5_words = []
+MLU6_words = []
+MLU7_words = []
+MLU8_words = []
+MLU9_words = []
+MLU10up_words = []
+
+for book in modified_book_words:
+    final_words_modify3, final_words_modify4 = modified_book_words[book]
+    for MLU1book in MLU1:
+        if book == MLU1book:
+            MLU1_words.extend(final_words_modify4)
+    for MLU2book in MLU2:
+        if book == MLU2book:
+            for word in final_words_modify4:
+                if word not in MLU1_words:
+                    MLU2_words.extend(word)
+    for MLU3book in MLU3:
+        if book == MLU3book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words):
+                    print word
+                    MLU3_words.extend(word)
+    for MLU4book in MLU4:
+        if book == MLU4book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words):
+                    print word
+                    MLU4_words.extend(word)
+    for MLU5book in MLU5:
+        if book == MLU5book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words and MLU4_words):
+                    print word
+                    MLU5_words.extend(word)
+    for MLU6book in MLU6:
+        if book == MLU6book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words and MLU4_words and MLU5_words):
+                    print word
+                    MLU6_words.extend(word)
+    for MLU7book in MLU7:
+        if book == MLU7book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words and \
+                    MLU4_words and MLU5_words and MLU6_words):
+                    print word
+                    MLU7_words.extend(word)
+    for MLU8book in MLU8:
+        if book == MLU8book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words and \
+                    MLU4_words and MLU5_words and MLU6_words and MLU7_words):
+                    print word
+                    MLU8_words.extend(word)
+    for MLU9book in MLU9:
+        if book == MLU9book:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words and \
+                    MLU4_words and MLU5_words and MLU6_words and MLU7_words\
+                    and MLU8_words):
+                    print word
+                    MLU9_words.extend(word)
+    for MLU10upbook in MLU10up:
+        if book == MLU10upbook:
+            for word in final_words_modify4:
+                if word not in (MLU1_words and MLU2_words and MLU3_words and \
+                    MLU4_words and MLU5_words and MLU6_words and MLU7_words\
+                    and MLU8_words and MLU9_words):
+                    print word
+                    MLU10up_words.extend(word)
+           
+print MLU1_words
+print MLU2_words
+print MLU3_words
+print MLU4_words    
+print MLU5_words
+print MLU6_words
+print MLU7_words
+print MLU8_words
+print MLU9_words
+print MLU10up_words
+
+'''
+#prints information related to MLU's
 for book in MLU_dict:
     morpheme_count, sent_count, MLU = MLU_dict[book]
     print book[32:-4]
@@ -478,29 +652,7 @@ print "Morpheme1: ", morpheme1_list
 print "Plural nouns: "
 print NNS_list
 #getting '======='
-
-print "3rd person singular present verbs: "
-print VBZ_list
-#getting "'s"
-
-#print "Regular past tense verbs: "
-#print VBD_list
-
-print "Gerund or present participle: "
-print VBG_list
-
-print "Regular past and Past participle verb: "
-print VBDN_list
-
-print "Possessive ending: "
-print POS_list
-
-print "Possessive wh-pronoun: "
-print WP_list
-
-#print "Be words: "
-#print be_list        
-
+'''
 
                     
             
