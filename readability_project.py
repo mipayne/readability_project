@@ -214,7 +214,7 @@ raw = f.read()
     #Morpheme counting rules from --> http://www.sltinfo.com/mean-length-of-utterance/
         #according to these rules should have 100 sentences (these books to don't have that many words)
 import glob
-list_of_files = glob.glob('resources/converted/StoryCorpus/*.txt')
+list_of_files = glob.glob('./resources/converted/StoryCorpus/*.txt')
 
 MLU_dict = {}
 
@@ -468,6 +468,8 @@ ordered_list = []
 
 for book in MLU_dict:
     book_name = book[32:-4]
+    if book_name == "The_Bat":#the bat is here!
+        print book_name
     morpheme_count, sent_count, MLU = MLU_dict[book]
     tuple_count = 0
     first_book = False
@@ -489,6 +491,7 @@ for book in MLU_dict:
             ordered_list.append((book, MLU))
             break
 #print ordered_list
+
             
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
@@ -498,6 +501,7 @@ def truncate(f, n):
     i, p, d = s.partition('.')
     return '.'.join([i, (d+'0'*n)[:n]])
 MLU10up = []
+MLUunder1 = []
 MLU1 = []
 MLU2 = []
 MLU3 = []
@@ -507,12 +511,15 @@ MLU6 = []
 MLU7 = []
 MLU8 = []
 MLU9 = []
-   
+  
 book_count = 0
 for book in ordered_list:
     number = truncate(book[1],0)
     if len(number) > 2:
         MLU10up.append(book)
+    elif number[0] == '0':
+        #print book
+        MLUunder1.append(book)
     elif number[0] == '1':
         MLU1.append(book)
     elif number[0] == '2':
@@ -563,67 +570,59 @@ MLU10up_words = []
 for book in modified_book_words:
     final_words_modify3, final_words_modify4 = modified_book_words[book]
     for MLU1book in MLU1:
-        if book == MLU1book:
-            MLU1_words.extend(final_words_modify4)
+        if book == MLU1book[0]:
+            MLU1_words.append(final_words_modify4)
     for MLU2book in MLU2:
-        if book == MLU2book:
+        if book == MLU2book[0]:
             for word in final_words_modify4:
                 if word not in MLU1_words:
-                    MLU2_words.extend(word)
+                    MLU2_words.append(word)
     for MLU3book in MLU3:
-        if book == MLU3book:
+        if book == MLU3book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words):
-                    print word
-                    MLU3_words.extend(word)
+                    MLU3_words.append(word)
     for MLU4book in MLU4:
-        if book == MLU4book:
+        if book == MLU4book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words):
-                    print word
-                    MLU4_words.extend(word)
+                    MLU4_words.append(word)
     for MLU5book in MLU5:
-        if book == MLU5book:
+        if book == MLU5book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words and MLU4_words):
-                    print word
-                    MLU5_words.extend(word)
+                    MLU5_words.append(word)
     for MLU6book in MLU6:
-        if book == MLU6book:
+        if book == MLU6book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words and MLU4_words and MLU5_words):
-                    print word
-                    MLU6_words.extend(word)
+                    MLU6_words.append(word)
     for MLU7book in MLU7:
-        if book == MLU7book:
+        if book == MLU7book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words and \
                     MLU4_words and MLU5_words and MLU6_words):
-                    print word
-                    MLU7_words.extend(word)
+                    MLU7_words.append(word)
     for MLU8book in MLU8:
-        if book == MLU8book:
+        if book == MLU8book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words and \
                     MLU4_words and MLU5_words and MLU6_words and MLU7_words):
-                    print word
-                    MLU8_words.extend(word)
+                    MLU8_words.append(word)
     for MLU9book in MLU9:
-        if book == MLU9book:
+        if book == MLU9book[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words and \
                     MLU4_words and MLU5_words and MLU6_words and MLU7_words\
                     and MLU8_words):
-                    print word
-                    MLU9_words.extend(word)
+                    MLU9_words.append(word)
     for MLU10upbook in MLU10up:
-        if book == MLU10upbook:
+        if book == MLU10upbook[0]:
             for word in final_words_modify4:
                 if word not in (MLU1_words and MLU2_words and MLU3_words and \
                     MLU4_words and MLU5_words and MLU6_words and MLU7_words\
                     and MLU8_words and MLU9_words):
-                    print word
-                    MLU10up_words.extend(word)
+                    MLU10up_words.append(word)
            
 print MLU1_words
 print MLU2_words
@@ -635,6 +634,8 @@ print MLU7_words
 print MLU8_words
 print MLU9_words
 print MLU10up_words
+
+#NOT WORKING!!! returns all empty lists
 
 '''
 #prints information related to MLU's
