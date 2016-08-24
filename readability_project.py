@@ -79,6 +79,9 @@ class Sentence(object):
     def get_sentence(self):
         return self.sentence
         
+    def set_sentence(self, new_sent):
+        self.sentence = new_sent
+        
     def get_words(self):
         return self.words
 
@@ -89,10 +92,10 @@ class Word(object):
     original word
     pos_tag
     """
-    def __init__(self, word, lem_word, pos_tag):
+    def __init__(self, word, pos_tag):
         self.word = word
         self.pos_tag = pos_tag
-        self.lem_word = lem_word
+
     def get_word(self):
         return self.word
     
@@ -138,7 +141,7 @@ def random_syn(current_word):
     
 
 #tokenizer
-f = open("./Maxs_Pet_copy.txt")
+f = open("./resources/converted/StoryCorpus/Freda_Says_Please.txt")
 raw = f.read()
 
 
@@ -146,7 +149,7 @@ final_words = []
 word_sent_token = []
 pos_tag_sent_list = []
 lem_ready_word_list = []
-sent_dict = {}
+sent_dict = collections.OrderedDict()
 
 #tokenize
 sent_tokenize_list = sent_tokenize(raw)#breaks raw text into list of its sentences
@@ -187,14 +190,18 @@ for sent in sent_dict:
         #makes each word into a word object
         new_word = Word(word, pos_tag)
         #print new_word.get_word()
-        y.append(word)
+        y.append(new_word)
     #makes each sentence into a sentence object
-    new_sent = Sentence(sent, word)
+    new_sent = Sentence(sent, y)
     sent_object_list.append(new_sent)
 
+'''
 for sent in sent_object_list:
+    print "Sentence"
     print sent.get_sentence()
-    
+    for word in sent.get_words():
+        print word.get_word()
+'''        
 #print len(sent_tokenize_list)
 #print sent_tokenize_list
 #print pos_tag_sent_list
@@ -213,19 +220,19 @@ raw = f.read()
 word_list = []
 
 
-
+'''
 #figuring out how to work with synsets and object oriented programming
 for sent in sent_object_list:
     #print sent.get_sentence()
     for word in sent.get_words():
-        #print word.get_word()
+        print word.get_word()
         if word.get_pos_tag() == 'ADV':
             print "adverb here!"
 #        for ss in wn.synsets(words_list.get_word()):
 #            print (ss)
 #            for sim in ss.similar_tos():
 #                print('    {}'.format(sim))
-
+'''
 
 
 
@@ -233,36 +240,78 @@ for sent in sent_object_list:
 
 
 for sent in sent_object_list:
+    sent_len = 0#for word change
+    word_count = 0#keeps track of spaces in sentence
     #print "NEW SENTENCE"
     #print "\n"
     #iterates through the indecies of the word list in each sentence object
     for i in range(1,(len(sent.get_words())-1)):
         current_word = sent.get_words()[i].get_word()
-        #print "First Word" 
-        #print current_word
+        prev_word = sent.get_words()[i-1].get_word()
+        next_word = sent.get_words()[i+1].get_word()
+        if i == 1:
+            word_count += 1
+            sent_len += len(prev_word)
+        #finds Verb/Adverb pairs and chooses a synonym to replace the adverb
+        if sent.get_words()[i].get_pos_tag() == 'RB':
+            print "First Word: ", current_word 
+            if sent.get_words()[i+1].get_pos_tag() == 'VBD':
+                print "Found a pair: ", current_word, " ", next_word
+                #print "\n"
+                syn_choice = random_syn(current_word)
+                if syn_choice == None:
+                    syn_choice = current_word
+                    
+                print "Syn_choice: ", syn_choice
+                sent.get_words()[i].set_word(syn_choice)
+                print "Word after syn: ", sent.get_words()[i].get_word()
+                
+                old_sent = sent.get_sentence()
+                print "OLD SENTENCE: ", old_sent
+                new_sent = old_sent[:sent_len + word_count]+ syn_choice + old_sent[sent_len + len(current_word) + word_count:]
+                print "NEW SENTENCE: ", new_sent
+                
+                #should actually change the sentence attribute of sentence object
+                #naming of object is the same e.g (<__main__.Sentence objecct at 0x1152b7210)
+                sent.set_sentence(new_sent)
+                print "After sent set: ", sent.get_sentence()
+                print '\n'
+                
+            elif sent.get_words()[i-1].get_pos_tag() == 'VBD':
+                print "Found a pair: ", prev_word, " ", current_word
+                #print "\n"
+                syn_choice = random_syn(current_word)
+                if syn_choice == None:
+                    syn_choice = current_word
+                print "Syn_choice: ", syn_choice
+                sent.get_words()[i].set_word(syn_choice)
+                print "Word after syn: ", sent.get_words()[i].get_word()
+                
+                old_sent = sent.get_sentence()
+                print "OLD SENTENCE: ", old_sent
+                new_sent = old_sent[:sent_len + word_count]+ syn_choice + old_sent[sent_len + len(current_word) + word_count:]
+                print "NEW SENTENCE: ", new_sent
+                
+                
+                sent.set_sentence(new_sent)
+                print "After sent set: ", sent.get_sentence()
+                print '\n'
+        word_count += 1
+        sent_len += len(current_word)
+#following line of code so far confirms that the set_word works
+#HOWEVER, words still needs to be changed in sentence 
+'''
+print "Second Time through"
+for sent in sent_object_list:
+    print sent.get_sentence()
+    #print "NEW SENTENCE"
+    #print "\n"
+    #iterates through the indecies of the word list in each sentence object
+    for i in range(1,(len(sent.get_words())-1)):
+        current_word = sent.get_words()[i].get_word()
         prev_word = sent.get_words()[i-1].get_word()
         next_word = sent.get_words()[i+1].get_word()
         #finds Verb/Adverb pairs and chooses a synonym to replace the adverb
-        if sent.get_words()[i].get_pos_tag() == 'RB':
-            if sent.get_words()[i+1].get_pos_tag() == 'VBD':
-                print "Found a pair: ", current_word, " ", next_word
-                print "\n"
-                syn_choice = random_syn(current_word)
-                if syn_choice == None:
-                    syn_choice = current_word
-                print syn_choice
-                
-                
-            if sent.get_words()[i-1].get_pos_tag() == 'VBD':
-                print "Found a pair: ", prev_word, " ", current_word
-                print "\n"
-                syn_choice = random_syn(current_word)
-                if syn_choice == None:
-                    syn_choice = current_word
-                print syn_choice
-            sent.get_words()[i].set_word(syn_choice)
-            #print "Synonym"
-            #print sent.get_words()[i].get_word()
-            #print '\n'
-
-    
+        print current_word 
+    print "\n"
+'''
