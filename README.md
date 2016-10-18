@@ -1,5 +1,9 @@
 level up and down the readability of stories
 
+analyz_meaning_of_sentences:
+-uses nltk to get code to recognize sentences as correct or incorrect
+-attempts to fix synonym problem where new sentences are syntactically correct but don't make sense.
+
 story_categories:
 -prints out what words are found in books in grade level 1.2
 -prints out what words are found in books in grade level 1.3 but not found in 1.2
