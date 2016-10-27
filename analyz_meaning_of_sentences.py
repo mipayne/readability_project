@@ -6,6 +6,7 @@ Created on Mon Oct 17 10:42:30 2016
 """
 
 import nltk
+
 from nltk import load_parser
 cp = load_parser('grammars/book_grammars/sql0.fcfg', trace = 3)
 query = 'What cities are located in China'
@@ -36,7 +37,49 @@ expr = read_expr('walk(angus)', signature=sig)
 print(expr.function.type)
 print(expr.argument.type)
 
-NotFnS = read_expr('-north_of(f,s)')
-print(NotFns)
-SnF = read_expr('north_of(s, f)')
+#perform automated inference to show the validity of the argument
+#NotFnS = read_expr('-north_of(f,s)')
+#print(NotFnS)
+#SnF = read_expr('north_of(s, f)')
+#R = read_expr('all x.all y. (north_of(x,y) -> -north_of(y,x))')
+#prover = nltk.inference.Prover9()
+#prover.config_prover9(r'./bin')
+#prover.prove(NotFnS, [SnF, R])
+
+
+#truth in model
+dom = {'b','o', 'c'}
+v = """bertie => b
+olive => o 
+cyril => c
+boy => {b}
+girl => {o}
+dog => {c}
+walk => {o, c}
+see => {(b, o), (c, b), (o, c)}
+"""
+val= nltk.Valuation.fromstring(v)
+#test truth
+print ('o', 'c') in val['see']#True
+
+print ('b',) in val['boy']#True
+
+#if you used bindings, in (variable, value) format
+g = nltk.Assignment(dom, [('x', 'o'), ('y', 'c')])
+print g#{'y':'c', 'x':'o'}
+
+m = nltk.Model(dom, val)
+print m.evaluate('see(olive,y)',g)
+#clear all bindings from an assignment
+g.purge()
+print m.evaluate('see(olive,y)', g)#Undefined
+
+#Model building
+a3 = read_expr('exists x.(man(x) & walks(x))')
+c1 = read_expr('mortal(socrates)')
+c2 = read_expr('-mortal(socrates)')
+mb = nltk.Mace(5)
+#can't use mace
+mb.config_prover9(r'./bin/')
+print(mb.build_model(None, [a3, c1]))
 
